@@ -1,0 +1,143 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  13
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Note: this file is a Copy of $FOAM_TUTORIALS/resources/blockMesh/pitzDaily
+
+convertToMeters 0.008125;
+
+vertices
+(    //block 1
+    (-5.5 0 0.5)      //0
+    (-0.5 0 0.5)      //1
+    (-0.5 0 -0.5)     //2
+    (-5.5 0 -0.5)     //3        
+    (-5.5 15 0.5)     //4
+    (-0.5 15 0.5)     //5
+    (-0.5 15 -0.5)    //6
+    (-5.5 15 -0.5)    //7
+    
+    //block 2
+    (0.5 0 0.5)       //8
+    (0.5 0 -0.5)      //9
+    (0.5 15 0.5)      //10
+    (0.5 15 -0.5)     //11
+    (20.5 0 0.5)      //12
+    (20.5 0 -0.5)     //13
+    (20.5 15 0.5)     //14
+    (20.5 15 -0.5)    //15
+    
+);
+
+posX
+(
+    (0.3 0.3 2)
+    (0.6 0.4 1)
+    (0.3 0.3 0.8)
+);
+
+posZ
+(
+    (0.1 0.4 5)
+    (0.9 0.6 1)
+    
+);
+
+posZR
+(
+    (0.05 0.2 20)
+    (0.6 1 1)	
+);
+
+posY
+(
+    (0.3 0.6 3)
+    (0.7 0.4 3)
+);
+
+yNet 300;
+
+blocks
+(
+    hex (0 1 2 3 4 5 6 7)
+    (50 1 $yNet)
+    simpleGrading ($posX 1 $posZR)
+ 
+    hex (1 8 9 2 5 10 11 6)
+    (10 1 $yNet)
+    simpleGrading ($posX 1 $posZR)
+    
+    hex (8 12 13 9 10 14 15 11)
+    (200 1 $yNet)
+    simpleGrading ($posX 1 $posZR)
+);
+
+boundary
+(
+
+    inlet1
+    {
+        type patch;
+        faces
+        (
+            (3 7 4 0)
+        );
+    }
+    
+    inlet2
+    {
+        type patch;
+        faces
+        (
+            (1 8 9 2)
+        );
+    }
+    
+    outlet
+    { 
+        type patch;
+        faces
+        (
+            (4 5 6 7)
+            (5 10 11 6)
+            (10 14 15 11)
+            (15 13 12 14)
+        );
+    }
+    lowerWall
+    {
+        type wall;
+        faces
+        (
+            (0 1 2 3)
+            (8 12 13 9)
+        );
+    }
+    frontAndBack
+    {
+        type empty;
+        faces
+        (
+            (0 1 5 4)    //block 1 front
+            (3 2 6 7)    //block 1 back
+            (1 8 10 5)   //block 2 front
+            (2 9 11 6)   //block 2 back
+            (8 12 14 10) //block 3 front
+            (9 13 15 11) //block 3 back
+        );
+    }
+    
+);
+
+// ************************************************************************* //
